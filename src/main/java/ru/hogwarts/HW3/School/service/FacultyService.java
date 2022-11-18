@@ -1,49 +1,49 @@
 package ru.hogwarts.HW3.School.service;
 
 import org.springframework.stereotype.Service;
+import ru.hogwarts.HW3.School.component.RecordMapper;
 import ru.hogwarts.HW3.School.exception.FacultyNotFoundException;
 import ru.hogwarts.HW3.School.model.Faculty;
+import ru.hogwarts.HW3.School.record.FacultyRecord;
+import ru.hogwarts.HW3.School.repository.FacultyRepository;
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
 public class FacultyService {
 
-    private final Map<Long, Faculty> facultyMap = new HashMap<>();
-    private long idGenerator = 1;
+    private final FacultyRepository facultyRepository;
+    private final RecordMapper recordMapper;
 
-    public Faculty create(Faculty faculty) {
-        faculty.setId(idGenerator++);
-        facultyMap.put(faculty.getId(), faculty);
-        return faculty;
+
+    public FacultyService(FacultyRepository facultyRepository, RecordMapper recordMapper) {
+        this.facultyRepository = facultyRepository;
+        this.recordMapper = recordMapper;
     }
 
-    public Faculty read(long id) {
-        if (!facultyMap.containsKey(id)) {
-            throw new FacultyNotFoundException(id);
-        }
-        return facultyMap.get(id);
+    public FacultyRecord create(FacultyRecord facultyRecord) {
+        return recordMapper.toRecord(facultyRepository.save(recordMapper.toEntity(facultyRecord)));
     }
 
-    public Faculty update(long id, Faculty newFaculty) {
-        Faculty oldFaculty = read(id);
-        oldFaculty.setName(newFaculty.getName());
-        oldFaculty.setColor(newFaculty.getColor());
-        facultyMap.put(id, oldFaculty);
-        return newFaculty;
+    public FacultyRecord read(long id) {
+        return recordMapper.toRecord(facultyRepository.findById(id).orElseThrow(() -> new FacultyNotFoundException(id)));
     }
 
-    public Faculty delete(long id) {
-        if (!facultyMap.containsKey(id)) {
-            throw new FacultyNotFoundException(id);
-        }
-        return facultyMap.remove(id);
+    public FacultyRecord update(long id, FacultyRecord facultyRecord) {
+        Faculty oldFaculty = facultyRepository.findById(id).orElseThrow(() -> new FacultyNotFoundException(id));
+        oldFaculty.setName(facultyRecord.getName());
+        oldFaculty.setColor(facultyRecord.getColor());
+        return recordMapper.toRecord(facultyRepository.save(oldFaculty));
     }
 
-    public Collection<Faculty> findByColor(String color) {
-        return facultyMap.values().stream().filter(faculty -> faculty.getColor().equals(color)).collect(Collectors.toList());
+    public FacultyRecord delete(long id) {
+        Faculty faculty = facultyRepository.findById(id).orElseThrow(() -> new FacultyNotFoundException(id));
+        facultyRepository.delete(faculty);
+        return recordMapper.toRecord(faculty);
+    }
+
+    public Collection<FacultyRecord> findByColor(String color) {
+        return facultyRepository.findAllByColor(color).stream().map(recordMapper::toRecord).collect(Collectors.toList());
     }
 }

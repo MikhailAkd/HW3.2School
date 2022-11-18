@@ -1,9 +1,10 @@
 package ru.hogwarts.HW3.School.controller;
 
 import org.springframework.web.bind.annotation.*;
-import ru.hogwarts.HW3.School.model.Faculty;
+import ru.hogwarts.HW3.School.record.FacultyRecord;
 import ru.hogwarts.HW3.School.service.FacultyService;
 
+import javax.validation.Valid;
 import java.util.Collection;
 
 @RestController
@@ -17,27 +18,27 @@ public class FacultyController {
     }
 
     @PostMapping
-    public Faculty create(@RequestBody Faculty faculty) {
-        return facultyService.create(faculty);
+    public FacultyRecord create(@RequestBody @Valid FacultyRecord facultyRecord) {
+        return facultyService.create(facultyRecord);
     }
 
     @GetMapping("/{id}")
-    public Faculty create(@PathVariable long id) {
+    public FacultyRecord create(@PathVariable long id) {
         return facultyService.read(id);
     }
 
     @PutMapping("/{id}")
-    public Faculty update(@PathVariable long id, @RequestBody Faculty faculty) {
-        return facultyService.update(id, faculty);
+    public FacultyRecord update(@PathVariable long id, @RequestBody @Valid FacultyRecord facultyRecord) {
+        return facultyService.update(id, facultyRecord);
     }
 
     @DeleteMapping("/{id}")
-    public Faculty delete(@PathVariable long id) {
+    public FacultyRecord delete(@PathVariable long id) {
         return facultyService.delete(id);
     }
 
     @GetMapping
-    public Collection<Faculty> findByColor(@RequestParam String color) {
+    public Collection<FacultyRecord> findByColor(@RequestParam String color) {
         return facultyService.findByColor(color);
     }
 }

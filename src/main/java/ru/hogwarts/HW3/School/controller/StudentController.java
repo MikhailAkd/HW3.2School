@@ -1,9 +1,10 @@
 package ru.hogwarts.HW3.School.controller;
 
 import org.springframework.web.bind.annotation.*;
-import ru.hogwarts.HW3.School.model.Student;
+import ru.hogwarts.HW3.School.record.StudentRecord;
 import ru.hogwarts.HW3.School.service.StudentService;
 
+import javax.validation.Valid;
 import java.util.Collection;
 
 @RestController
@@ -16,27 +17,27 @@ public class StudentController {
     }
 
     @PostMapping
-    public Student create(@RequestBody Student student) {
-        return studentService.create(student);
+    public StudentRecord create(@RequestBody @Valid StudentRecord studentRecord) {
+        return studentService.create(studentRecord);
     }
 
     @GetMapping("/{id}")
-    public Student create(@PathVariable long id) {
+    public StudentRecord create(@PathVariable long id) {
         return studentService.read(id);
     }
 
     @PutMapping("/{id}")
-    public Student update(@PathVariable long id, @RequestBody Student student) {
-        return studentService.update(id, student);
+    public StudentRecord update(@PathVariable long id, @RequestBody @Valid StudentRecord studentRecord) {
+        return studentService.update(id, studentRecord);
     }
 
     @DeleteMapping("/{id}")
-    public Student delete(@PathVariable long id) {
+    public StudentRecord delete(@PathVariable long id) {
         return studentService.delete(id);
     }
 
     @GetMapping
-    public Collection<Student> findByAge(@RequestParam int age) {
+    public Collection<StudentRecord> findByAge(@RequestParam int age) {
         return studentService.findByAge(age);
     }
 }

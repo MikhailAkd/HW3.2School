@@ -1,21 +1,20 @@
-package ru.hogwarts.HW3.School.model;
+package ru.hogwarts.HW3.School.record;
 
-import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 
-@Entity
-@Table(name = "faculties")
-public class Faculty {
+public class FacultyRecord {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @NotBlank(message = "У факультета должно быть название")
     private String name;
+    @NotBlank(message = "У каждого факультета есть свой цвет")
     private String color;
 
-    public Faculty() {
+    public FacultyRecord() {
     }
 
-    public Faculty(Long id, String name, String color) {
+    public FacultyRecord(Long id, String name, String color) {
         this.id = id;
         this.name = name;
         this.color = color;
